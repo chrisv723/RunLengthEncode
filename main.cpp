@@ -1,14 +1,24 @@
 /*
- * main.cpp
+ *  main.cpp
  *
  *  Created on: Mar 20, 2020
  *  Author: Christopher
+ * 
+ *  This program accepts a binary image file as input
+ * 	and performs two methods of run length encoding resulting in a compressed image file
+ * 
+ * 	This program implements method one and four of runLength encode 
+ * 
+ * 	Method 1: encodes zero but does not wrap around
+ * 
+ * 	Method 4: does not encode zeroes and implements wrap around
  */
 
 #include <iostream>
 #include <fstream>
 #include <string>
 using namespace std;
+
 
 class runLength
 {
@@ -29,6 +39,14 @@ public:
 		nameEncodeFile = "";
 	}
 
+
+	/**
+	 * Given an image file as input this functions performs a variation of the run length encoding algorithm 
+	 * where zeros are encoded but program does not wrap around
+	 * 
+	 * @param in - given image file specified when program is first executed
+	 * @param encode - output file used to contain image file compression results
+	*/
 	void encodeMethod1(ifstream &in, ofstream &encode) // encodes zeros and does not implement wrap around
 	{ 
 		string numRows, numCols, minVal, maxVal, curVal, nextVal;
@@ -72,6 +90,14 @@ public:
 		}
 	}
 
+
+	/**
+	 * Given an image file as input this functions performs a variation of the run length encoding algorithm 
+	 * where zeros are not encoded but function implements wrap around
+	 * 
+	 * @param in - given image file specified when program is first executed
+	 * @param encode - output file used to contain image file compression results
+	*/
 	void encodeMethod4(ifstream &in, ofstream &encode) // dont encode zeroes and implement wrap around
 	{
 
@@ -124,6 +150,17 @@ public:
 		encode.close();
 	}
 
+
+	/**
+	 * This function is called within encodeMethod4(...) and is used to disregard all zeroes present in image file
+	 * as method 4 of runLength encoding does not encode any encountered zeroes
+	 * 
+	 * @param in - given image file specified when program is first executed
+	 * @param row - current row encodeMethod4(...) left off on before calling this function
+	 * @param col - current column encodeMethod4(...) left off on before calling this function
+	 * @param zeroCnt - integer variable used a counter to keep track of all zeros currently being skipped as we are not encode zeroes
+	 * @return returns the integer value of the next eligible "pixel" from given image file after skiping any zeros directly preceeding it
+	*/
 	int skipZeros(ifstream &in, int &row, int &col, int &zeroCnt)
 	{
 
@@ -169,6 +206,7 @@ public:
 	}
 };
 
+// controls operation/flow of program
 int main(int argc, char *argv[])
 {
 
@@ -192,14 +230,14 @@ int main(int argc, char *argv[])
 	switch (whichM)
 	{
 	case 1:
-		cout << "method 1";
+		cout << "method 1" << flush;
 		encodeFile.open(test.c_str());
 		encodeFile << "File: " << nameEncodeFile << " Method: " << whichM << endl;
 		code->encodeMethod1(inFile, encodeFile);
 		break;
 
 	case 4:
-		cout << "method 4";
+		cout << "method 4" << flush;
 		encodeFile.open(test.c_str());
 		encodeFile << "File: " << nameEncodeFile << " Method: " << whichM << endl;
 		code->encodeMethod4(inFile, encodeFile);
